@@ -49,7 +49,10 @@
             margin-bottom: 30px;
             border-left: 4px solid #667eea;
         }
-        .info-box h2 { color: #667eea; margin-bottom: 15px; }
+        .info-box h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
         .info-box ul { list-style: none; padding-left: 0; }
         .info-box li {
             padding: 8px 0;
@@ -71,7 +74,8 @@
             color: #333;
             font-weight: 600;
         }
-        input[type="text"] {
+        input[type="text"],
+        input[type="email"] {
             width: 100%;
             padding: 12px;
             border: 2px solid #ddd;
@@ -79,7 +83,8 @@
             font-size: 16px;
             transition: border-color 0.3s;
         }
-        input[type="text"]:focus {
+        input[type="text"]:focus,
+        input[type="email"]:focus {
             outline: none;
             border-color: #667eea;
         }
@@ -103,6 +108,7 @@
             transition: transform 0.2s;
         }
         button:hover { transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
         .success-message, .error-message {
             padding: 20px;
             border-radius: 10px;
@@ -120,7 +126,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>️ Разбор техники</h1>
+        <h1>⛸️ Разбор техники</h1>
         <p class="subtitle">Фигурное катание с Артёмом (1 спортивный разряд)</p>
         
         <div class="free-badge">
@@ -144,3 +150,69 @@
                 <input type="text" id="name" name="name" required placeholder="Иван Иванов">
             </div>
             
+            <div class="form-group">
+                <label for="contact">Telegram или WhatsApp (для связи):</label>
+                <input type="text" id="contact" name="contact" required placeholder="@username или +7...">
+            </div>
+            
+            <div class="form-group">
+                <label for="element">Какой элемент разбираем:</label>
+                <input type="text" id="element" name="element" required placeholder="Например: сальто, флип, волчок">
+            </div>
+            
+            <div class="form-group">
+                <label for="video">Загрузите видео (до 50MB):</label>
+                <input type="file" id="video" name="video" accept="video/*" required>
+            </div>
+            
+            <button type="submit">📤 Отправить видео на разбор</button>
+        </form>
+        
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+        
+        <footer>
+            <p>Есть вопросы? Напиши мне в Telegram</p>
+        </footer>
+    </div>
+    
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const successDiv = document.getElementById('successMessage');
+            const errorDiv = document.getElementById('errorMessage');
+            
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+            
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    successDiv.innerHTML = `
+                        <h3>✅ Видео отправлено!</h3>
+                        <p><strong>Ваш номер в очереди:</strong> ${result.position}</p>
+                        <p><strong>ID заявки:</strong> ${result.id}</p>
+                        <p>Артём разберёт видео и напишет тебе в Telegram в течение 1-2 дней. 🎉</p>
+                    `;
+                    successDiv.style.display = 'block';
+                    this.reset();
+                } else {
+                    errorDiv.textContent = 'Ошибка: ' + result.error;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Ошибка отправки: ' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
