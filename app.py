@@ -30,7 +30,6 @@ def index():
 @app.route('/submit', methods=['POST'])
 def submit_video():
     data = load_data()
-    
     name = request.form.get('name', 'Аноним')
     contact = request.form.get('contact', '')
     element = request.form.get('element', '')
