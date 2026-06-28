@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бесплатный разбор техники фигурного катания | Артём</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+        .free-badge {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        .info-box {
+            background: #f7f7f7;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 4px solid #667eea;
+        }
+        .info-box h2 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+        .info-box ul { list-style: none; padding-left: 0; }
+        .info-box li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+        }
+        .info-box li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        form { margin-top: 20px; }
+        .form-group { margin-bottom: 20px; }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+        input[type="text"],
+        input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input[type="text"]:focus,
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #667eea;
+            border-radius: 8px;
+            width: 100%;
+            cursor: pointer;
+        }
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.2s;
+        }
+        button:hover { transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
+        .success-message, .error-message {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        .success-message { background: #4CAF50; color: white; }
+        .error-message { background: #f44336; color: white; }
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⛸️ Разбор техники</h1>
+        <p class="subtitle">Фигурное катание с Артёмом (1 спортивный разряд)</p>
+
+        <div class="free-badge">
+            🎁 Сейчас разборы БЕСПЛАТНЫЕ!
+        </div>
+
+        <div class="info-box">
+            <h2>📹 Что вы получите:</h2>
+            <ul>
+                <li>Подробный анализ техники вашего элемента</li>
+                <li>Указание на основные ошибки</li>
+                <li>Советы по исправлению</li>
+                <li>Рекомендации по упражнениям</li>
+                <li>Разбор в течение 1-2 дней</li>
+            </ul>
+        </div>
+
+        <form id="uploadForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">Ваше имя:</label>
+                <input type="text" id="name" name="name" required placeholder="Иван Иванов">
+            </div>
+
+            <div class="form-group">
+                <label for="contact">Telegram или WhatsApp (для связи):</label>
+                <input type="text" id="contact" name="contact" required placeholder="@username или +7...">
+            </div>
+
+            <div class="form-group">
+                <label for="element">Какой элемент разбираем:</label>
+                <input type="text" id="element" name="element" required placeholder="Например: сальто, флип, волчок">
+            </div>
+
+            <div class="form-group">
+                <label for="video">Загрузите видео (до 50MB):</label>
+                <input type="file" id="video" name="video" accept="video/*" required>
+            </div>
+
+            <button type="submit">📤 Отправить видео на разбор</button>
+        </form>
+
+        <div id="successMessage" class="success-message"></div>
+        <div id="errorMessage" class="error-message"></div>
+
+        <footer>
+            <p>Есть вопросы? Напиши мне в Telegram</p>
+        </footer>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const successDiv = document.getElementById('successMessage');
+            const errorDiv = document.getElementById('errorMessage');
+
+            successDiv.style.display = 'none';
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch('/submit', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    successDiv.innerHTML = `
+                        <h3>✅ Видео отправлено!</h3>
+                        <p><strong>Ваш номер в очереди:</strong> ${result.position}</p>
+                        <p><strong>ID заявки:</strong> ${result.id}</p>
+                        <p>Артём разберёт видео и напишет тебе в Telegram в течение 1-2 дней. 🎉</p>
+                    `;
+                    successDiv.style.display = 'block';
+                    this.reset();
+                } else {
+                    errorDiv.textContent = 'Ошибка: ' + result.error;
+                    errorDiv.style.display = 'block';
+                }
+            } catch (error) {
+                errorDiv.textContent = 'Ошибка отправки: ' + error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
